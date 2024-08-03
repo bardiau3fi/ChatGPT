@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragments.WelcomeScreenFragment"
+    android:background="@color/mainBackgroundColor">
+    <com.scwang.wave.MultiWaveHeader
+        android:id="@+id/waveHeader"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        app:mwhCloseColor="#1A4559"
+        app:mwhColorAlpha="0.45"
+        app:mwhGradientAngle="45"
+        app:mwhProgress="1"
+        app:mwhStartColor="#04293A"
+        app:mwhVelocity="3"
+        app:mwhWaveHeight="50dp"
+        app:mwhWaves="MultiWave"/>
+<TextView
+    android:id="@+id/titleTxt"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_centerHorizontal="true"
+    android:layout_marginTop="24dp"
+    android:text="ChatGPT App"
+    android:textColor="@color/white"
+    android:textStyle="bold"
+android:textSize="40sp"/>
+
+    <TextView
+        android:id="@+id/descrTxt"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/titleTxt"
+        android:layout_centerHorizontal="true"
+        android:text="Enjoy New Season"
+        android:layout_margin="12dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"/>
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/descrTxt"
+        android:layout_centerHorizontal="true"
+        android:layout_margin="16dp"
+        app:lottie_autoPlay="true"
+        app:lottie_loop="true"
+        app:lottie_rawRes="@raw/robot_animation"/>
+    <Button
+        android:id="@+id/continueBtn"
+        android:layout_width="match_parent"
+        android:layout_height="80dp"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="16dp"
+        android:layout_marginHorizontal="16dp"
+        android:backgroundTint="@color/black"
+        android:text="Continue"
+        android:textSize="24sp"
+        android:layout_alignParentBottom="true"
+
+
+        />
+    
+</RelativeLayout>

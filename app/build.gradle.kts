@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.navigationsafeargs)
+    id("kotlin-kapt")
+
 }
 
 android {
@@ -16,7 +19,9 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
-
+    buildFeatures{
+        viewBinding=true
+    }
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -45,4 +50,17 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+
+    //splash
+    implementation (libs.androidx.core.splashscreen)
+    //lottie
+    implementation (libs.lottie)
+    //waveHeader
+    implementation (libs.multiWaveHeader)
+
+    //Navigation
+    implementation (libs.navigation.fragment.ktx)
+    implementation (libs.navigation.ui.ktx)
+
+
 }
