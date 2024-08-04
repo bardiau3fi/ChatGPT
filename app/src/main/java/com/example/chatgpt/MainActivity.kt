@@ -12,7 +12,6 @@ import com.example.chatgpt.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
     private var _binding:ActivityMainBinding? = null
     private val binding get() = _binding!!
-    private lateinit var navHost: NavHostFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
