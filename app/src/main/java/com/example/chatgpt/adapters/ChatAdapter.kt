@@ -1,6 +1,7 @@
 package com.example.chatgpt.adapters
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -8,11 +9,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.chatgpt.databinding.ItemReceiverBinding
 import com.example.chatgpt.databinding.ItemSenderBinding
 import com.example.chatgpt.models.Chat
+import com.example.chatgpt.utils.copyToClipBoard
+import com.example.chatgpt.utils.hideKeyBoard
 import java.text.SimpleDateFormat
 import java.util.Locale
 
 
-class ChatAdapter:ListAdapter<Chat,RecyclerView.ViewHolder>(DiffCallback()) {
+class ChatAdapter(
+    private val onClickCallback:(message:String,view:View)->Unit
+):ListAdapter<Chat,RecyclerView.ViewHolder>(DiffCallback()) {
 
     class SenderViewHolder(private val itemSenderBinding: ItemSenderBinding):RecyclerView.ViewHolder(itemSenderBinding.root){
         fun bind(chat: Chat){
@@ -67,6 +72,13 @@ val chat=getItem(position)
         }else{
             (holder as ReceiverViewHolder).bind(chat)
 
+        }
+        holder.itemView.setOnLongClickListener {
+            holder.itemView.context.hideKeyBoard(it)
+            if (holder.adapterPosition !=-1){
+                onClickCallback(chat.message,holder.itemView)
+            }
+            true
         }
     }
 

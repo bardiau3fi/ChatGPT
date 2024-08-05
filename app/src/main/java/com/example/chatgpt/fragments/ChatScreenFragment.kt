@@ -5,11 +5,18 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.PopupMenu
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.fragment.findNavController
+import com.example.chatgpt.R
 import com.example.chatgpt.adapters.ChatAdapter
 import com.example.chatgpt.databinding.FragmentChatScreenBinding
 import com.example.chatgpt.models.Chat
+import com.example.chatgpt.utils.copyToClipBoard
+import com.example.chatgpt.utils.hideKeyBoard
+import com.example.chatgpt.utils.longToastShow
+import com.example.chatgpt.utils.shareMsg
 import com.example.chatgpt.viewmodel.ChatViewModel
 import java.util.Date
 
@@ -17,6 +24,10 @@ import java.util.Date
 class ChatScreenFragment : Fragment() {
     private var _binding: FragmentChatScreenBinding? = null
     private val binding get() = _binding!!
+
+    private val chatViewModel:ChatViewModel by lazy {
+        ViewModelProvider(this)[ChatViewModel::class.java]
+    }
    private val chatList = arrayListOf(
         Chat(
             "1",
@@ -91,10 +102,50 @@ class ChatScreenFragment : Fragment() {
             Date()
         )
     )
-    private  var chatAdapter= ChatAdapter()
-    private val chatViewModel:ChatViewModel by lazy {
-        ViewModelProvider(this)[ChatViewModel::class.java]
-    }
+    private  var chatAdapter= ChatAdapter(){message,textView ->
+        val popup=PopupMenu(context,textView)
+        try {
+            val fields = popup.javaClass.declaredFields
+            for (field in fields) {
+                if ("mPopup" == field.name) {
+                    field.isAccessible = true
+                    val menuPopupHelper = field.get(popup)
+                    val classPopupHelper = Class.forName(menuPopupHelper.javaClass.name)
+                    val setForceIcons = classPopupHelper.getMethod(
+                        "setForceShowIcon",
+                        Boolean::class.javaPrimitiveType
+                    )
+                    setForceIcons.invoke(menuPopupHelper, true)
+                    break
+                }
+            }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+        popup.menuInflater.inflate(R.menu.option_menu,popup.menu)
+        popup.setOnMenuItemClickListener {item->
+            when(item.itemId){
+                //copy
+                R.id.coppyMenu->{
+                    view?.context?.copyToClipBoard(message)
+                    return@setOnMenuItemClickListener true}
+                //select
+                R.id.selectTxtMenu->{
+                     val action=ChatScreenFragmentDirections.actionChatScreenFragmentToSelectTextScreenFragment(message)
+                 findNavController().navigate(action)
+
+
+                    return@setOnMenuItemClickListener true}
+                //share
+                R.id.shareTxtMenu->{
+                    view?.context?.shareMsg(message)
+                    return@setOnMenuItemClickListener true}
+                else->{return@setOnMenuItemClickListener true}
+            }
+        }
+    popup.show()
+}
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentChatScreenBinding.inflate(layoutInflater)
         return binding.root
@@ -107,13 +158,26 @@ class ChatScreenFragment : Fragment() {
             chatAdapter.submitList(chatList)
             var counter=-1
         sendImageBtn.setOnClickListener {
-            counter+=1
-            if (counter>=chatList.size){
-                return@setOnClickListener
+            view.context.hideKeyBoard(it)
+            if (edMessage.text.toString().trim().isNotEmpty()){
+                counter+=1
+                if (counter>=chatList.size){
+                    return@setOnClickListener
             }
-            chatViewModel.insertChat(chatList[counter])
+                chatViewModel.insertChat(chatList[counter])
+
+            }else{
+                view.context.longToastShow("Message Is Required")
+            }
 
         }
+
+
+
+
+
+
+
             chatViewModel.chatList.observe(viewLifecycleOwner){
                 chatAdapter.submitList(it)
                 chatRv.smoothScrollToPosition(it.size)
